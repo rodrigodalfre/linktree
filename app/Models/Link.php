@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Link extends Model
 {
     use HasFactory;
-    public $timestamp = false;
+    public $timestamps = false;
 }
