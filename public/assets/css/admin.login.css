@@ -50,3 +50,11 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+.error{
+    background-color:#d66363;
+    color: #FFF;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}

@@ -12,6 +12,11 @@
     
     <div class="loginArea">
         <h1>Login</h1>
+
+        @if ($error) 
+            <div class="error">{{$error}}</div>
+        @endif
+
         <form method="POST">
             @csrf
             <input type="email" name="email" placeholder="Digite seu email">
