@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class View extends Model
 {
     use HasFactory;
-    public $timestamp = false;
+    public $timestamps = false;
 
     protected $fillable = ['id_page', 'view_date'];
 }

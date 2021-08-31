@@ -10,6 +10,12 @@ use App\Http\Controllers\AdminController;
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::get('/admin', [AdminController::class, 'index']);
+Route::prefix('/admin')->group(function (){
+    Route::get('/login', [AdminController::class, 'login'])->name('login');
+    Route::get('/register', [AdminController::class, 'register'])->name('register');
+
+    Route::get('/', [AdminController::class, 'index']);
+
+});
 
 Route::get('/{slug}', [PageController::class, 'index']);

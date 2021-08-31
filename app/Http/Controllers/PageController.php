@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 #Models
 use App\Models\Page;
 use App\Models\Link;
+use App\Models\View;
 
 class PageController extends Controller
 {
@@ -39,6 +40,11 @@ class PageController extends Controller
             ->get();
 
             //Register the view
+            $view = View::firstOrNew(
+                ['id_page' => $page->id, 'view_date' => date('Y-m-d')]
+            );
+            $view->total++;
+            $view->save();
             
 
             $data = [
