@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
+use App\Models\Page;
 
 class AdminController extends Controller
 {
@@ -16,10 +17,6 @@ class AdminController extends Controller
             'register',
             'registerAction'
         ]]);
-    }
-
-    public function index(){
-        echo 'admin';
     }
 
     public function login(Request $request){
@@ -64,8 +61,21 @@ class AdminController extends Controller
             $request->session()->flash('error', 'Já existe um usuário com esse email');
             return redirect('/admin/register');
         }
-
     }
 
+    public function logout() {
+        Auth::logout();
+        return redirect('/admin');
+    }
+
+    public function index(){
+        $user = Auth::user();
+
+        $pages = Page::where('id_user', $user->id)->get();
+        
+        return view('admin/index', [
+            'pages' => $pages
+        ]);
+    }
 
 }

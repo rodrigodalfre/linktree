@@ -18,6 +18,8 @@ Route::prefix('/admin')->group(function (){
     Route::get('/register', [AdminController::class, 'register'])->name('register');
     Route::post('/register', [AdminController::class, 'registerAction']);
 
+    Route::get('/logout', [AdminController::class, 'logout']);
+
     Route::get('/', [AdminController::class, 'index']);
 
 });
