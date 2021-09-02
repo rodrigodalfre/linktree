@@ -6,9 +6,9 @@
 
     <ul id="links">
         @foreach ($links as $link)
-            <li class="link-item">    
+            <li class="link-item" data-id="{{$link->id}}">    
                 <div class="link-item-order">
-                    <img src="{{url('/assets/images/sort.png')}}" alt="sort" width="18px">
+                    <img src="{{url('/assets/images/sort.png')}}" alt="sort" width="28px">
                 </div>
                 <div class="link-item-info">
                     <div class="link-item-title">{{$link->title}}</div>
@@ -22,5 +22,17 @@
         @endforeach
     </ul>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script>
+        new Sortable(document.querySelector('#links'), {
+            animation: 150,
+            onEnd: async (e) => {
+                let id = e.item.getAttribute('data-id')
+                let link = '{{url('/admin/linkorder/${id}/${e.newIndex}')}}';
+                await fetch(link)
+                window.location.href = windows.location.href 
+            }
+        });
+    </script>
 
 @endsection
