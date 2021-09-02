@@ -122,4 +122,54 @@ class AdminController extends Controller
         ]);
     }
 
+    public function linkOrderUpdate($linkid, $order){
+        $user = Auth::user();
+
+        $link = Link::find($linkid);
+        $myPages = [];
+        
+        $myPagesQuery = Page::where('id_user', $user->id)->get();
+        foreach($myPagesQuery as $pageItem) {
+            $myPages[] = $pageItem->id;
+        }
+
+        if(in_array($link->id_page, $myPages)){
+
+            if($link->order > $order) {
+                //Subiu
+                $afterLinks = Link::where('id_page', $link->id_page)
+                    ->where('order', '>=', $order)
+                ->get();
+                foreach($afterLinks as $afterLink){
+                    $afterLink->order++;
+                    $afterLink->save(); 
+                }
+
+            } elseif ($link->order < $order){
+                //Desceu
+                $beforeLinks = Link::where('id_page', $link->id_page)
+                    ->where('order', '<=', $order)
+                ->get();
+                foreach($beforeLinks as $beforeLink){
+                    $beforeLink->order--;
+                    $beforeLink->save();
+                }
+            } 
+
+            $link->order = $order;
+            $link->save();
+
+            $allLinks = Link::where('id_page', $link->id_page)
+                ->orderBy('order', 'ASC')
+            ->get();
+
+            foreach($allLinks as $linkKey => $linkItem) {
+                $linkItem->order = $linkKey;
+                $linkItem->save();
+            }
+        }
+
+        return []; 
+    }
+
 }
