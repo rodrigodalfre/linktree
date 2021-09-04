@@ -101,28 +101,6 @@ class AdminController extends Controller
         }
     }
 
-    public function pageDesign($slug){
-        $user = Auth::user();
-        $page = Page::where('slug', $slug)
-            ->where('id_user', $user->id)    
-        ->first();
-
-        return view('admin/page_design', [
-            'menu' => 'design'
-        ]);
-    }
-
-    public function pageStats($slug){
-        $user = Auth::user();
-        $page = Page::where('slug', $slug)
-            ->where('id_user', $user->id)    
-        ->first();
-        
-        return view('admin/page_stats', [
-            'menu' => 'stats'
-        ]);
-    }
-
     public function linkOrderUpdate($linkid, $order){
         $user = Auth::user();
 
@@ -280,6 +258,49 @@ class AdminController extends Controller
         }
 
         return redirect('/admin');
+    }
+
+    public function delLink($slug, $linkid){
+        $user = Auth::user();
+        $page = Page::where('id_user', $user->id)
+            ->where('slug', $slug)
+        ->first();
+
+        if($page) {
+            $link = Link::where('id_page', $page->id)
+                ->where('id', $linkid)
+            ->first();
+            if($link){
+                $link->delete();
+                return redirect('/admin/'.$page->slug.'/links');
+            }
+        }
+        return redirect('/admin');
+    }
+
+    #Design
+    public function pageDesign($slug){
+        $user = Auth::user();
+        $page = Page::where('slug', $slug)
+            ->where('id_user', $user->id)    
+        ->first();
+
+        return view('admin/page_design', [
+            'menu' => 'design',
+            'page' => $page
+        ]);
+    }
+
+    public function pageStats($slug){
+        $user = Auth::user();
+        $page = Page::where('slug', $slug)
+            ->where('id_user', $user->id)    
+        ->first();
+        
+        return view('admin/page_stats', [
+            'menu' => 'stats',
+            'page' => $page
+        ]);
     }
 
 }
