@@ -2,7 +2,7 @@
 
 @section('body')
 
-    <h3>Novo link</h3>
+    <h3>{{isset($link) ? 'Editar Link' : 'Novo link'}}</h3>
 
     @if ($errors->any())
         <ul>
@@ -19,36 +19,36 @@
         <label>
             Status:<br>
             <select name="status">
-                <option value="0">Desativado</option>
-                <option value="1">Ativado</option>
+                <option {{isset($link) ? ($link->status == '1' ? 'selected' : '') : ''}} value="1">Ativado</option>
+                <option {{isset($link) ? ($link->status == '0' ? 'selected' : '') : ''}} value="0">Desativado</option>
             </select>
         </label>
 
         <label>
             Título do link: <br>
-            <input type="text" name="title" placeholder="Título aqui">
+            <input  type="text" name="title" value="{{$link->title ?? ''}}" placeholder="Título aqui">
         </label>
 
         <label>
             URL do link: <br>
-            <input type="text" name="href" placeholder="Url">
+            <input type="text" name="href" value="{{$link->href ?? ''}}" placeholder="Url">
         </label>
 
         <label>
             Cor do fundo: <br>
-            <input type="color" name="op_bg_color" value="#FFFFFF">
+            <input type="color" name="op_bg_color" value="{{$link->op_bg_color ?? '#FFFFFF'}}">
         </label>
 
         <label>
             Cor do texto: <br>
-            <input type="color" name="op_text_color" value="#000000">   
+            <input type="color" name="op_text_color" value="{{$link->op_text_color ?? '#000000'}}">   
         </label>
 
         <label>
             Tipo de borda:<br>
             <select name="op_border_type">
-                <option value="square">Quadrado</option>
-                <option value="rounded">Arredondado</option>
+                <option {{isset($link) ? ($link->op_border_type == 'square' ? 'selected' : '') : ''}} value="square">Quadrado</option>
+                <option {{isset($link) ? ($link->op_border_type == 'rounded' ? 'selected' : '') : ''}} value="rounded">Arredondado</option>
             </select>
         </label>
 

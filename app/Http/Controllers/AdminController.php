@@ -223,4 +223,63 @@ class AdminController extends Controller
         }
     }
 
+    public function editLink($slug, $linkid){
+        $user = AutH::user();
+        $page = Page::where('id_user', $user->id)
+            ->where('slug', $slug)
+        ->first();
+
+        if($page){
+            $link = Link::where('id_page', $page->id)
+                ->where('id', $linkid)
+            ->first();
+
+            if($link){
+                return view('admin/page_editlink', [
+                    'menu' => 'links',
+                    'page' => $page,
+                    'link' => $link
+                ]);
+            }
+        }
+
+        return redirect('/admin');
+    }
+
+    public function editLinkAction($slug, $linkid, Request $request){
+        $user = AutH::user();
+        $page = Page::where('id_user', $user->id)
+            ->where('slug', $slug)
+        ->first();
+
+        if($page){
+            $link = Link::where('id_page', $page->id)
+                ->where('id', $linkid)
+            ->first();
+
+            if($link){
+                $data = $request->validate([
+                    'status' => ['required', 'boolean'],
+                    'title' => ['required', 'min:2'],
+                    'href' => ['required','url'],
+                    'op_bg_color' => ['required','regex:/^[#][0-9A-F]{3,6}$/i'],
+                    'op_text_color' => ['required','regex:/^[#][0-9A-F]{3,6}$/i'],
+                    'op_border_type' => ['required', Rule::in(['square', 'rounded'])]
+                ]);
+                
+                $link->status = $data['status'];
+                $link->title = $data['title'];
+                $link->href = $data['href'];
+                $link->op_bg_color = $data['op_bg_color'];
+                $link->op_text_color = $data['op_text_color'];
+                $link->op_border_type = $data['op_border_type'];
+                $link->save();
+
+                return redirect('/admin/'.$page->slug.'/links');
+            }
+        }
+
+        return redirect('/admin');
+    }
+
 }
