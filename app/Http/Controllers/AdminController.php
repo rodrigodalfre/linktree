@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 use App\Models\User;
 use App\Models\Page;
@@ -168,8 +169,58 @@ class AdminController extends Controller
                 $linkItem->save();
             }
         }
-
         return []; 
+    }
+
+    public function newLink($slug) {
+        $user = Auth::user();
+        $page = Page::where('id_user', $user->id)
+            ->where('slug', $slug)
+        ->first();
+
+        if($page){
+            return view('admin/page_editlink', [
+                'menu' => 'links',
+                'page' => $page
+            ]);
+        } else {
+            return redirect ('/admin');
+        }
+    }
+
+    public function newLinkAction($slug, Request $request) {
+        $user = Auth::user();
+        $page = Page::where('id_user', $user->id)
+            ->where('slug', $slug)
+        ->first(); 
+
+        if($page){
+            $data = $request->validate([
+                'status' => ['required', 'boolean'],
+                'title' => ['required', 'min:2'],
+                'href' => ['required','url'],
+                'op_bg_color' => ['required','regex:/^[#][0-9A-F]{3,6}$/i'],
+                'op_text_color' => ['required','regex:/^[#][0-9A-F]{3,6}$/i'],
+                'op_border_type' => ['required', Rule::in(['square', 'rounded'])]
+            ]);
+            
+            $totalLinks = Link::where('id_page', $page->id)->count();
+
+            $newLink = new Link();
+            $newLink->id_page = $page->id;
+            $newLink->status = $data['status'];
+            $newLink->order = $totalLinks;
+            $newLink->title = $data['title'];
+            $newLink->href = $data['href'];
+            $newLink->op_bg_color = $data['op_bg_color'];
+            $newLink->op_text_color = $data['op_text_color'];
+            $newLink->op_border_type = $data['op_border_type'];
+            $newLink->save();
+
+            return redirect('/admin/'.$page->slug.'/links');
+        } else {
+            return redirect ('/admin');
+        }
     }
 
 }

@@ -72,9 +72,8 @@
                 href="{{$link->href}}"
                 class="link{{$link->op_border_type}}"
                 style="background-color:{{$link->op_bg_color}};color:{{$link->op_text_color}};"
-                target="_blank"
-                
-            >{{$link->title}}</a>    
+                target="_blank">
+                {{$link->title}}</a>    
         @endforeach
     </div>
 
