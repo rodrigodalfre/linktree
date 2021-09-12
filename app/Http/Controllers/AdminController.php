@@ -270,8 +270,19 @@ class AdminController extends Controller
             $link = Link::where('id_page', $page->id)
                 ->where('id', $linkid)
             ->first();
+
             if($link){
                 $link->delete();
+
+                $allLinks = Link::where('id_page', $page->id)
+                    ->orderBy('order', 'ASC')
+                ->get();
+
+                foreach($allLinks as $linkKey => $linkItem) {
+                    $linkItem->order = $linkKey;
+                    $linkItem->save();
+                }
+
                 return redirect('/admin/'.$page->slug.'/links');
             }
         }
